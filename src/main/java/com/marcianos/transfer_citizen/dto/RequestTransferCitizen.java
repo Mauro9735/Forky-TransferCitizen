@@ -8,7 +8,7 @@ import lombok.*;
 @AllArgsConstructor
 @NoArgsConstructor
 public class RequestTransferCitizen {
-
+    private long citizenId;
     private String operatorId;
     private String operatorName;
     private String transferUrl;
