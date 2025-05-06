@@ -4,20 +4,20 @@ import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 
 @Builder
 @Getter
 @Setter
-@Table(name = "user")
+@Table(name = "users")
 @Entity
+@AllArgsConstructor
+@NoArgsConstructor
 public class User {
     @Id
     private String id;
-    @Column
-    private String documentId;
+    @Column(name = "documenttype")
+    private String documentType;
     @Column
     private String name;
     @Column

@@ -14,7 +14,12 @@ import java.util.Map;
 @NoArgsConstructor
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class ResponseDocumentMicroservice {
-    @JsonProperty("documents")
-    private Map<String, String> documents;
+
+        @JsonProperty("url")
+        private String url;
+
+        @JsonProperty("firmado")
+        private String firmado;
+
 }
 

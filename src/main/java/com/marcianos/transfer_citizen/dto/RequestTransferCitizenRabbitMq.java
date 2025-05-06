@@ -7,7 +7,7 @@ import lombok.*;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class RequestTransferCitizen {
+public class RequestTransferCitizenRabbitMq {
     private long citizenId;
     private String operatorId;
     private String operatorName;
