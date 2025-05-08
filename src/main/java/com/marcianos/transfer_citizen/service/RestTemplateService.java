@@ -5,7 +5,6 @@ import com.marcianos.transfer_citizen.dto.RequestTransferCitizenOperator;
 import com.marcianos.transfer_citizen.dto.lotso_documents_microservice.ResponseDocumentMicroservice;
 import com.marcianos.transfer_citizen.dto.mrpotato_adapter.RequestMrpotatoAdapterUnregisterCitizen;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.*;
 import org.springframework.stereotype.Service;

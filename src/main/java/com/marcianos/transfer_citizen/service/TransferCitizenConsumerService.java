@@ -33,7 +33,10 @@ public class TransferCitizenConsumerService {
             validateStatusCode(statusCode, "Error when deregistering citizen");
 
             Map<String, ResponseDocumentMicroservice> responseDocuments = restTemplateService.getDocumentById(user.getDocumentNumber());
-            List<String> documents = extractDocumentUrls(responseDocuments);
+            List<String> documents = null;
+            if(responseDocuments != null && !responseDocuments.isEmpty()){
+                documents = extractDocumentUrls(responseDocuments);
+            }
 
             RequestTransferCitizenOperator transferCitizenBody = buildTransferCitizenBody(user, documents);
 
@@ -73,8 +76,9 @@ public class TransferCitizenConsumerService {
                 .citizenEmail(user.getEmail())
                 .urlDocuments(new HashMap<>())
                 .build();
-
-        requestTransfer.setUrls(documents);
+        if(documents!=null && !documents.isEmpty()){
+            requestTransfer.setUrls(documents);
+        }
         return requestTransfer;
     }
 
