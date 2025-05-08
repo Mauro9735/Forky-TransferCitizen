@@ -2,12 +2,10 @@ package com.marcianos.transfer_citizen.service;
 
 import com.marcianos.transfer_citizen.dto.RequestTransferCitizenRabbitMq;
 import com.marcianos.transfer_citizen.dto.RequestTransferCitizenOperator;
-import com.marcianos.transfer_citizen.dto.documents_microservice.ResponseDocumentMicroservice;
-import com.marcianos.transfer_citizen.dto.notification.RequestNotificationMessage;
+import com.marcianos.transfer_citizen.dto.lotso_documents_microservice.ResponseDocumentMicroservice;
 import com.marcianos.transfer_citizen.entity.User;
 import lombok.RequiredArgsConstructor;
 import org.springframework.amqp.rabbit.annotation.RabbitListener;
-import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.stereotype.Service;
 
@@ -21,35 +19,64 @@ public class TransferCitizenConsumerService {
 
     private final RestTemplateService restTemplateService;
     private final UserService userService;
-    private final RabbitTemplate rabbitTemplate;
+
+
+
+    // Service to transfer the citizen
 
     @RabbitListener(queues = "transfer_citizen_queue")
     public void processRequestTransferCitizen(RequestTransferCitizenRabbitMq requestTransferCitizenRabbitMq) {
-        HttpStatusCode statusCode = restTemplateService.unregisterCitizen(requestTransferCitizenRabbitMq);
-        if(statusCode.value() == 200 || statusCode.value()==204){
-            Map<String,ResponseDocumentMicroservice> responseDocumentMicroservice = restTemplateService.getDocumentById(String.valueOf(requestTransferCitizenRabbitMq.getCitizenId()));
-            List<String> documents =  responseDocumentMicroservice.values().stream()
-                       .map(ResponseDocumentMicroservice::getUrl)
-                       .toList();
-            User user = userService.getUserById(String.valueOf(requestTransferCitizenRabbitMq.getCitizenId()));
-            if(user == null){
-                throw new RuntimeException("User not found");
-            }
-            RequestTransferCitizenOperator transferCitizenBody = RequestTransferCitizenOperator.builder().id(requestTransferCitizenRabbitMq.getCitizenId())
-                    .citizenName(user.getName())
-                    .citizenEmail(user.getEmail())
-                    .urlDocuments(new HashMap<>()).build();
-            transferCitizenBody.setUrls(documents);
+        try {
+            User user = fetchUserById(requestTransferCitizenRabbitMq.getId());
+
+            HttpStatusCode statusCode = restTemplateService.unregisterCitizen(requestTransferCitizenRabbitMq,user.getDocumentNumber());
+            validateStatusCode(statusCode, "Error when deregistering citizen");
+
+            Map<String, ResponseDocumentMicroservice> responseDocuments = restTemplateService.getDocumentById(user.getDocumentNumber());
+            List<String> documents = extractDocumentUrls(responseDocuments);
+
+            RequestTransferCitizenOperator transferCitizenBody = buildTransferCitizenBody(user, documents);
+
             HttpStatusCode statusCodeTransfer = restTemplateService.transferCitizen(requestTransferCitizenRabbitMq.getTransferUrl(), transferCitizenBody);
-            if(statusCodeTransfer.is2xxSuccessful()){
-                userService.deleteUserById(user.getId());
-                rabbitTemplate.convertAndSend("notifications", RequestNotificationMessage.builder().action("Transfer Well").to_email(user.getEmail()).build());
-            }else {
-                throw new RuntimeException("Error when transferring citizen: " + statusCodeTransfer);
-            }
-        }else {
-            throw new RuntimeException("Error when deregistering citizen: " + "statusCode");
+            validateStatusCode(statusCodeTransfer, "Error when transferring citizen");
+
+        }catch (Exception e){
+            throw new RuntimeException("Error when processing transfer citizen request: " + e.getMessage(), e);
         }
     }
+
+
+    private void validateStatusCode(HttpStatusCode statusCode, String errorMessage) {
+        if (!statusCode.is2xxSuccessful()) {
+            throw new RuntimeException(errorMessage + ": " + statusCode);
+        }
+    }
+
+    private List<String> extractDocumentUrls(Map<String, ResponseDocumentMicroservice> responseDocuments) {
+        return responseDocuments.values().stream()
+                .map(ResponseDocumentMicroservice::getUrl)
+                .toList();
+    }
+
+    private User fetchUserById(String id) {
+        User user = userService.getUserById(id);
+        if (user == null) {
+            throw new RuntimeException("User not found");
+        }
+        return user;
+    }
+
+    private RequestTransferCitizenOperator buildTransferCitizenBody(User user, List<String> documents) {
+        RequestTransferCitizenOperator requestTransfer = RequestTransferCitizenOperator.builder()
+                .id(Long.parseLong(user.getDocumentNumber()))
+                .citizenName(user.getName())
+                .citizenEmail(user.getEmail())
+                .urlDocuments(new HashMap<>())
+                .build();
+
+        requestTransfer.setUrls(documents);
+        return requestTransfer;
+    }
+
 
 }

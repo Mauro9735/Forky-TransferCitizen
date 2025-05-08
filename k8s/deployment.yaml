@@ -1,0 +1,56 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: consumer-forky-transfer
+  labels:
+    app: consumer-forky-transfer
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: consumer-forky-transfer
+  template:
+    metadata:
+      labels:
+        app: consumer-forky-transfer
+    spec:
+      containers:
+        - name: consumer-forky-transfer
+          image: mauro9735/consumer-forky-transfer:latest
+          imagePullPolicy: IfNotPresent
+          ports:
+            - containerPort: 8080
+          env:
+            - name: RABBITMQ_USER
+              value: marciano
+            - name: RABBITMQ_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: my-rabbitmq
+                  key: rabbitmq-password
+            - name: RABBITMQ_HOST
+              value: my-rabbitmq.rabbitmq-ns.svc.cluster.local
+            - name: RABBITMQ_PORT
+              value: "5672"
+            - name: DB_USER
+              valueFrom:
+                secretKeyRef:
+                  name: db-credentials
+                  key: DB_USER
+            - name: DB_PASS
+              valueFrom:
+                secretKeyRef:
+                  name: db-credentials
+                  key: DB_PASS
+            - name: DB_URL
+              valueFrom:
+                secretKeyRef:
+                  name: db-credentials
+                  key: DB_URL
+          resources:
+            limits:
+              cpu: "100m"
+              memory: "250Mi"
+            requests:
+              cpu: "100m"
+              memory: "250Mi"

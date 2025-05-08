@@ -1,4 +1,4 @@
-package com.marcianos.transfer_citizen.dto.govcarpeta;
+package com.marcianos.transfer_citizen.dto.mrpotato_adapter;
 
 import lombok.*;
 
@@ -7,8 +7,8 @@ import lombok.*;
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
-public class RequestGovCarpetaUnregisterCitizen {
-    private long id;
+public class RequestMrpotatoAdapterUnregisterCitizen {
+    private String id;
     private String operatorId;
     private String operatorName;
 }

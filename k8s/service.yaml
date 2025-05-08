@@ -1,0 +1,12 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: consumer-forky-transfer-svc
+  namespace: transfer
+spec:
+  selector:
+    app: consumer-forky-transfer
+  ports:
+    - port: 8080
+      targetPort: 8080
+  type: ClusterIP

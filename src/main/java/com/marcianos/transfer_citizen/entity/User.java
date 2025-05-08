@@ -5,6 +5,8 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 import lombok.*;
+import java.time.LocalDateTime;
+
 
 @Builder
 @Getter
@@ -16,8 +18,10 @@ import lombok.*;
 public class User {
     @Id
     private String id;
-    @Column(name = "documenttype")
+    @Column
     private String documentType;
+    @Column
+    private String documentNumber;
     @Column
     private String name;
     @Column
@@ -32,4 +36,8 @@ public class User {
     private String city;
     @Column
     private String department;
+    @Column
+    private LocalDateTime createdAt;
+    @Column
+    private LocalDateTime updatedAt;
 }
