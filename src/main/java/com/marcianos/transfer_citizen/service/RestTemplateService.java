@@ -18,8 +18,8 @@ import java.util.Map;
 @RequiredArgsConstructor
 public class RestTemplateService {
 
-    private static final String UNREGISTER_CITIZEN_URL = "https://api.marcianos.me/v1/adapter/unregisterCitizen";
-    private static final String GET_DOCUMENTS_URL = "https://api.marcianos.me/v1/documents/folder/";
+    private static final String UNREGISTER_CITIZEN_URL = "http://mrpotato-adapter-service.mrpotato-adapter.svc.cluster.local/v1/adapter/unregisterCitizen";
+    private static final String GET_DOCUMENTS_URL = "http://mrpotato-adapter-service.mrpotato-adapter.svc.cluster.local/v1/documents/folder/";
 
     private final RestTemplate restTemplate;
 
