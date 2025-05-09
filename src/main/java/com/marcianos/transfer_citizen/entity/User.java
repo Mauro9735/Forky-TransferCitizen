@@ -18,9 +18,9 @@ import java.time.LocalDateTime;
 public class User {
     @Id
     private String id;
-    @Column
+    @Column(name = "\"documentType\"")
     private String documentType;
-    @Column
+    @Column(name = "\"documentNumber\"")
     private String documentNumber;
     @Column
     private String name;
@@ -36,8 +36,8 @@ public class User {
     private String city;
     @Column
     private String department;
-    @Column
+    @Column(name="\"createdAt\"")
     private LocalDateTime createdAt;
-    @Column
+    @Column(name="\"updatedAt\"")
     private LocalDateTime updatedAt;
 }
