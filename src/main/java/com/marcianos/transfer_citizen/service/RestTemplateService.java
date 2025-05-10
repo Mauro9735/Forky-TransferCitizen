@@ -19,7 +19,7 @@ import java.util.Map;
 public class RestTemplateService {
 
     private static final String UNREGISTER_CITIZEN_URL = "http://mrpotato-adapter-service.mrpotato-adapter.svc.cluster.local/v1/adapter/unregisterCitizen";
-    private static final String GET_DOCUMENTS_URL = "http://lotso-documents-service.documents.svc.cluster.local/v1/documents/folder/";
+    private static final String GET_DOCUMENTS_URL = "http://lotso-documents-service.documents.svc.cluster.local:8080/v1/documents/folder/";
 
     private final RestTemplate restTemplate;
 
