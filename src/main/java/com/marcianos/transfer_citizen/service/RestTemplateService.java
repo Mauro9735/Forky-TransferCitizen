@@ -13,6 +13,7 @@ import org.springframework.web.client.HttpServerErrorException;
 import org.springframework.web.client.RestTemplate;
 
 import java.util.Map;
+import java.util.logging.Logger;
 
 @Service
 @RequiredArgsConstructor
@@ -20,7 +21,7 @@ public class RestTemplateService {
 
     private static final String UNREGISTER_CITIZEN_URL = "http://mrpotato-adapter-service.mrpotato-adapter.svc.cluster.local/v1/adapter/unregisterCitizen";
     private static final String GET_DOCUMENTS_URL = "http://lotso-documents-service.documents.svc.cluster.local:8080/v1/documents/folder/";
-
+    private static final Logger LOGGER = Logger.getLogger(RestTemplateService.class.getName());
     private final RestTemplate restTemplate;
 
     public HttpStatusCode unregisterCitizen(RequestTransferCitizenRabbitMq requestTransferCitizenRabbitMq,String id ) {
@@ -31,6 +32,7 @@ public class RestTemplateService {
                     .operatorName(requestTransferCitizenRabbitMq.getOperatorName())
                     .build();
 
+            LOGGER.info("Began Unregister citizen request");
             ResponseEntity<?> response = restTemplate.postForEntity(UNREGISTER_CITIZEN_URL, requestGovCarpeta, Object.class);
             return response.getStatusCode();
         }catch (HttpClientErrorException | HttpServerErrorException e) {
@@ -59,6 +61,7 @@ public class RestTemplateService {
 
     public HttpStatusCode transferCitizen(String url, RequestTransferCitizenOperator requestTransferCitizen) {
         try {
+            LOGGER.info("Began Transfer citizen request");
             ResponseEntity<?> response = restTemplate.postForEntity(url, requestTransferCitizen, Object.class);
             return response.getStatusCode();
         } catch (HttpClientErrorException | HttpServerErrorException e) {

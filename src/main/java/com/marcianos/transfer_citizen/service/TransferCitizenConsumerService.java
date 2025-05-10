@@ -12,6 +12,7 @@ import org.springframework.stereotype.Service;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.logging.Logger;
 
 @Service
 @RequiredArgsConstructor
@@ -19,6 +20,7 @@ public class TransferCitizenConsumerService {
 
     private final RestTemplateService restTemplateService;
     private final UserService userService;
+    private static final Logger LOGGER = Logger.getLogger(TransferCitizenConsumerService.class.getName());
 
 
 
@@ -51,17 +53,20 @@ public class TransferCitizenConsumerService {
 
     private void validateStatusCode(HttpStatusCode statusCode, String errorMessage) {
         if (!statusCode.is2xxSuccessful()) {
+            LOGGER.info("Status code not 2xx");
             throw new RuntimeException(errorMessage + ": " + statusCode);
         }
     }
 
     private List<String> extractDocumentUrls(Map<String, ResponseDocumentMicroservice> responseDocuments) {
+       LOGGER.info("Extracting document URLs");
         return responseDocuments.values().stream()
                 .map(ResponseDocumentMicroservice::getUrl)
                 .toList();
     }
 
     private User fetchUserById(String id) {
+        LOGGER.info("Fetching user with ID");
         User user = userService.getUserById(id);
         if (user == null) {
             throw new RuntimeException("User not found");
@@ -70,6 +75,7 @@ public class TransferCitizenConsumerService {
     }
 
     private RequestTransferCitizenOperator buildTransferCitizenBody(User user, List<String> documents) {
+        LOGGER.info("Building transfer citizen body");
         RequestTransferCitizenOperator requestTransfer = RequestTransferCitizenOperator.builder()
                 .id(Long.parseLong(user.getDocumentNumber()))
                 .citizenName(user.getName())
@@ -77,6 +83,7 @@ public class TransferCitizenConsumerService {
                 .urlDocuments(new HashMap<>())
                 .build();
         if(documents!=null && !documents.isEmpty()){
+            LOGGER.info("Setting urls");
             requestTransfer.setUrls(documents);
         }
         return requestTransfer;
