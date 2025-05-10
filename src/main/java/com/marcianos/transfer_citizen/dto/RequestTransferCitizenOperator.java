@@ -18,7 +18,7 @@ public class RequestTransferCitizenOperator {
     private String citizenEmail;
     private Map<String,String[]> urlDocuments;
     @Builder.Default
-    private String  confirmApi = "https://api.marcianos.me/api/transferCitizenConfirm";
+    private String  confirmAPI = "https://api.marcianos.me/api/transferCitizenConfirm";
 
     public void setUrls(List<String> values) {
         for (int i = 0; i < values.size(); i++) {

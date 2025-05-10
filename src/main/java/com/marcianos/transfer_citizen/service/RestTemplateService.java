@@ -65,12 +65,15 @@ public class RestTemplateService {
             LOGGER.info("Began Transfer citizen request");
             LOGGER.info("Request: " + requestTransferCitizen.toString());
             LOGGER.info("Request url: " + url);
+            LOGGER.info("Response url: " + restTemplate.postForEntity(url, requestTransferCitizen, Object.class));
             ResponseEntity<?> response = restTemplate.postForEntity(url, requestTransferCitizen, Object.class);
             LOGGER.info("Transfer citizen request completed " + response.getStatusCode() );
             return response.getStatusCode();
         } catch (HttpClientErrorException | HttpServerErrorException e) {
+            LOGGER.info("Error when transferring citizen HttpClientError: " + e.getMessage());
             throw new RuntimeException("Error when transferring citizen: " + e.getMessage(), e);
         } catch (Exception e) {
+            LOGGER.info("Error when transferring citizen exception: " + e.getMessage());
             throw new RuntimeException("Unexpected error when transferring citizen", e);
         }
     }
