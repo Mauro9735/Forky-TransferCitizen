@@ -11,6 +11,7 @@ import java.util.Map;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
+@ToString
 public class RequestTransferCitizenOperator {
     private long id;
     private String citizenName;

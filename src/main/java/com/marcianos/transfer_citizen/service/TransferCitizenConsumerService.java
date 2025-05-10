@@ -85,7 +85,9 @@ public class TransferCitizenConsumerService {
         if(documents!=null && !documents.isEmpty()){
             LOGGER.info("Setting urls");
             requestTransfer.setUrls(documents);
+            LOGGER.info("Urls Set");
         }
+        LOGGER.info("Request transfer citizen body built");
         return requestTransfer;
     }
 

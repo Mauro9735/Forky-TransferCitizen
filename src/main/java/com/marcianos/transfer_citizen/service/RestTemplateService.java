@@ -34,6 +34,7 @@ public class RestTemplateService {
 
             LOGGER.info("Began Unregister citizen request");
             ResponseEntity<?> response = restTemplate.postForEntity(UNREGISTER_CITIZEN_URL, requestGovCarpeta, Object.class);
+            LOGGER.info("Unregister citizen request completed");
             return response.getStatusCode();
         }catch (HttpClientErrorException | HttpServerErrorException e) {
             throw new RuntimeException("Error when deregistering citizen: " + e.getMessage(), e);
@@ -62,7 +63,10 @@ public class RestTemplateService {
     public HttpStatusCode transferCitizen(String url, RequestTransferCitizenOperator requestTransferCitizen) {
         try {
             LOGGER.info("Began Transfer citizen request");
+            LOGGER.info("Request: " + requestTransferCitizen.toString());
+            LOGGER.info("Request url: " + url);
             ResponseEntity<?> response = restTemplate.postForEntity(url, requestTransferCitizen, Object.class);
+            LOGGER.info("Transfer citizen request completed " + response.getStatusCode() );
             return response.getStatusCode();
         } catch (HttpClientErrorException | HttpServerErrorException e) {
             throw new RuntimeException("Error when transferring citizen: " + e.getMessage(), e);
