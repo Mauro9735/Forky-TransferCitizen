@@ -65,7 +65,7 @@ public class RestTemplateService {
             LOGGER.info("Began Transfer citizen request");
             LOGGER.info("Request: " + requestTransferCitizen.toString());
             LOGGER.info("Request url: " + url);
-            var response = restTemplate.postForEntity(url, requestTransferCitizen, Object.class);
+            var response = restTemplate.postForEntity(url, requestTransferCitizen, String.class);
             LOGGER.info("Response urllllllll: " + response.getBody());
             LOGGER.info("Transfer citizen request completed " + response.getStatusCode() );
             return response.getStatusCode();
